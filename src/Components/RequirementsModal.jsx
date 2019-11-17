@@ -50,10 +50,7 @@ export default class RequirementsModal extends Component {
             />
           </TabPane>
           <TabPane tab="Relative Intensity" key="2">
-            <NewMatrix
-              dataSource={this.state.dataSource}
-              columns={this.state.columns}
-            />
+            <Matrix />
           </TabPane>
         </Tabs>
       </Modal>
