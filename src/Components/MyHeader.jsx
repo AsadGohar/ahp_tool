@@ -12,7 +12,8 @@ export default class MyHeader extends Component {
   state = {
     visible: false,
     activeTab: 1,
-    okText: "Next"
+    okText: "Next",
+    metrixData: []
   };
 
   showModal = () => {
@@ -48,8 +49,11 @@ export default class MyHeader extends Component {
         });
       }
     );
-    this.props.setAhp([3, 5]);
-    
+    this.props.setAhp(this.state.matrixData);
+  }
+
+  setMatrixData(matrixData) {
+    this.setState({ matrixData });
   }
 
   render() {
@@ -77,7 +81,8 @@ export default class MyHeader extends Component {
               activeTab={activeTab}
               okText={okText}
               requirements={this.props.requirementsArr}
-              ahp = {this.props.ahp}
+              setMatrixData={this.setMatrixData}
+              matrixData={this.state.matrixData}
             />
           </Col>
         </Row>

@@ -122,7 +122,7 @@ export default class Matrix extends Component {
     return (
       <Select
         style={{ width: 65 }}
-        onChange={e => this.setReci(e, row_no, col_no)}
+        onChange={value => this.handleMatrixInput(value, row_no, col_no)}
       >
         {matrixOptions.map((item, index) => (
           <Option key={index} value={index}>
@@ -133,16 +133,28 @@ export default class Matrix extends Component {
     );
   }
 
-  setReci = (event, row_no, col_no) => {
+  handleMatrixInput = (value, row_no, col_no) => {
+    this.setReci(value, row_no, col_no);
+    // let newMatrixData = this.props.matrixData;
+    // if()
+    // newMatrixData.push(value);
+    // this.props.setMatrixData(newMatrixData);
+  }
+
+  setReci = (value, row_no, col_no) => {
     let newData = this.state.data;
 
-    // console.log(event + " | " + row_no + " | " + col_no);
-    newData[col_no - 1]["R" + row_no] = recMatrixOptions[event];
+    //console.log(value + " | " + row_no + " | " + col_no);
+    newData[col_no - 1]["R" + row_no] = recMatrixOptions[value];
+    
+    // console.log(newData[1]["R1"] + "|" + newData[2]["R2"] );
 
     this.setState({
       data: newData
-    });
+    });    
   };
+
+
 
   render() {  
     return (
