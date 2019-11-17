@@ -6,6 +6,9 @@ import RequirementsModal from "./RequirementsModal";
 const { Header } = Layout;
 
 export default class MyHeader extends Component {
+  constructor(props) {
+    super(props);
+  }
   state = {
     visible: false,
     activeTab: 1,
@@ -71,6 +74,7 @@ export default class MyHeader extends Component {
               handleOk={this.handleOk}
               activeTab={activeTab}
               okText={okText}
+              requirements={this.props.requirementsArr}
             />
           </Col>
         </Row>

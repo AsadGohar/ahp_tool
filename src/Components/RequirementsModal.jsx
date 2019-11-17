@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Modal, Tabs, Form } from "antd";
 import RequirementsForm from "./RequirementsForm";
 import Matrix from "./Matrix";
-import { stat } from "fs";
 import NewMatrix from "./NewMatrix";
 
 const { TabPane } = Tabs;
@@ -15,20 +14,12 @@ export default class RequirementsModal extends Component {
     super(props);
   }
   state = {
-    requirements: 0,
-    dataSource: [],
-    columns: []
+    requirements: 0
   };
 
-  setData = x => {
+  setRequirementCount = x => {
     this.setState({
-      dataSource: x
-    });
-  };
-
-  setColumn = x => {
-    this.setState({
-      columns: x
+      requirements: x
     });
   };
 
@@ -45,12 +36,12 @@ export default class RequirementsModal extends Component {
         <Tabs activeKey={activeTab.toString()}>
           <TabPane tab="Requirements" key="1">
             <WrappedForm
-              dataSource={this.state.setData}
-              columns={this.state.setColumn}
+              setRequirementCount={this.setRequirementCount}
+              requirementsArr={this.props.requirementsArr}
             />
           </TabPane>
           <TabPane tab="Relative Intensity" key="2">
-            <Matrix />
+            <Matrix requirements={this.state.requirements} />
           </TabPane>
         </Tabs>
       </Modal>

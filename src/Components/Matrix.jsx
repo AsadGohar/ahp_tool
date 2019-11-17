@@ -1,77 +1,142 @@
 import React, { Component } from "react";
-import { Table, Typography, Input } from "antd";
+import { Table, Select } from "antd";
+import { deepEqual } from "assert";
+import { throwStatement } from "@babel/types";
 
-const { Text } = Typography;
-const InputGroup = Input.Group;
+const { Option } = Select;
 
-const columns = [
-  {
-    title: "",
-    dataIndex: "row_header",
-    className: "row_header"
-  },
-  {
-    title: "R1",
-    dataIndex: "R1"
-  },
-  {
-    title: "R2",
-    dataIndex: "R2"
-  },
-  {
-    title: "R3",
-    dataIndex: "R3"
-  },
-  {
-    title: "R4",
-    dataIndex: "R4"
-  }
+const matrixOptions = [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "1/2",
+  "1/3",
+  "1/4",
+  "1/5",
+  "1/6",
+  "1/7",
+  "1/8",
+  "1/9"
+];
+
+const recMatrixOptions = [
+  "1",
+  "1/2",
+  "1/3",
+  "1/4",
+  "1/5",
+  "1/6",
+  "1/7",
+  "1/8",
+  "1/9",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9"
 ];
 
 export default class Matrix extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   state = {
-    data: [
-      {
-        key: "1",
-        row_header: "R1",
-        R1: 1,
-        R2: this.myInput(1, 2),
-        R3: this.myInput(1, 3),
-        R4: this.myInput(1, 4)
-      },
-      {
-        key: "2",
-        row_header: "R2",
-        R2: 1,
-        R3: this.myInput(2, 3),
-        R4: this.myInput(2, 4)
-      },
-      {
-        key: "3",
-        row_header: "R3",
-        R3: 1,
-        R4: this.myInput(3, 4)
-      },
-      {
-        key: "4",
-        row_header: "R4",
-        R4: 1
-      }
-    ]
+    columns: [],
+    data: [],
+    requirements: this.props.requirements
   };
+
+  componentDidMount() {
+    this.setColumns(this.props.requirements);
+    this.setData(this.props.requirements);
+  }
+
+  componentDidUpdate() {
+    if (this.state.requirements != this.props.requirements) {
+      this.updateRequirements(this.props.requirements);
+      this.setColumns(this.props.requirements);
+      this.setData(this.props.requirements);
+    }
+  }
+
+  updateRequirements(requirements) {
+    this.setState({ requirements });
+  }
+
+  setColumns(requirements) {
+    let newColumns = [
+      {
+        title: "",
+        dataIndex: "row_header",
+        className: "row_header"
+      }
+    ];
+
+    for (let i = 1; i <= requirements; i++) {
+      newColumns.push({
+        title: "R" + i,
+        dataIndex: "R" + i
+      });
+    }
+
+    this.setState({
+      columns: newColumns
+    });
+  }
+
+  setData(requirements) {
+    let newData = [];
+
+    for (let i = 1; i <= requirements; i++) {
+      let current = {
+        key: i,
+        row_header: "R" + i
+      };
+
+      current["R" + i] = 1;
+
+      for (let j = i + 1; j <= requirements; j++) {
+        current["R" + j] = this.myInput(i, j);
+      }
+
+      newData.push(current);
+    }
+
+    this.setState({
+      data: newData
+    });
+  }
 
   myInput(row_no, col_no) {
     return (
-      <Input
-        style={{ width: "40px" }}
+      <Select
+        style={{ width: 65 }}
         onChange={e => this.setReci(e, row_no, col_no)}
-      />
+      >
+        {matrixOptions.map((item, index) => (
+          <Option key={index} value={index}>
+            {item}
+          </Option>
+        ))}
+      </Select>
     );
   }
 
   setReci = (event, row_no, col_no) => {
     let newData = this.state.data;
-    newData[col_no - 1]["R" + row_no] = "1/" + event.target.value;
+
+    // console.log(event + " | " + row_no + " | " + col_no);
+    newData[col_no - 1]["R" + row_no] = recMatrixOptions[event];
 
     this.setState({
       data: newData
@@ -81,7 +146,7 @@ export default class Matrix extends Component {
   render() {
     return (
       <Table
-        columns={columns}
+        columns={this.state.columns}
         dataSource={this.state.data}
         bordered
         pagination={false}

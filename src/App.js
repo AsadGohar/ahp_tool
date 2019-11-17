@@ -1,14 +1,26 @@
-import React from 'react';
-import MyHeader from './Components/MyHeader';
-import './App.css';
-import { Layout } from 'antd';
+import React, { Component } from "react";
+import MyHeader from "./Components/MyHeader";
+import MyContent from "./Components/MyContent";
+import "./App.css";
+import { Layout } from "antd";
 
-function App() {
-  return (
-    <Layout>
+export default class App extends Component {
+  state = {
+    requirementsArr: []
+  };
+
+  setRequirement(x) {
+    this.setState({
+      requirementsArr: x
+    });
+  }
+
+  render() {
+    return (
+      <Layout>
         <MyHeader />
-    </Layout>
-  );
+        <MyContent requirements={this.state.requirementsArr} />
+      </Layout>
+    );
+  }
 }
-
-export default App;

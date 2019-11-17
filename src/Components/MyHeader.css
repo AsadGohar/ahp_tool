@@ -5,3 +5,11 @@ h1 {
 .row_header {
   font-weight: 600;
 }
+
+.ant-modal-content {
+  min-width: fit-content;
+}
+
+.ant-modal {
+  min-width: min-content !important;
+}
