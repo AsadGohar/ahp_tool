@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Table, Select } from "antd";
+import { AHPComponent } from "./AHPComponent"
 import { deepEqual } from "assert";
 import { throwStatement } from "@babel/types";
 
@@ -143,7 +144,7 @@ export default class Matrix extends Component {
     });
   };
 
-  render() {
+  render() {  
     return (
       <Table
         columns={this.state.columns}

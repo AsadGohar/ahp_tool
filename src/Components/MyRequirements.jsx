@@ -36,7 +36,7 @@ const columns = [
   }
 ];
 
-export default class MyContent extends Component {
+export default class MyRequirements extends Component {
   constructor(props) {
     super(props);
   }

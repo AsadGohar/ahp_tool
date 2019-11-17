@@ -1,25 +1,33 @@
 import React, { Component } from "react";
 import MyHeader from "./Components/MyHeader";
-import MyContent from "./Components/MyContent";
+import AHPComponent from "./Components/AHPComponent";
 import "./App.css";
 import { Layout } from "antd";
 
 export default class App extends Component {
   state = {
-    requirementsArr: []
+    requirementsArr: [],
+    ahp:[]
   };
 
-  setRequirement(x) {
+  setRequirement = x => {
     this.setState({
       requirementsArr: x
+    });
+  }
+
+  setAhp = x =>
+  {
+    this.setState({
+      ahp:x
     });
   }
 
   render() {
     return (
       <Layout>
-        <MyHeader />
-        <MyContent requirements={this.state.requirementsArr} />
+        <MyHeader setAhp = {this.setAhp} />
+        <AHPComponent ahp = {this.state.ahp} />
       </Layout>
     );
   }

@@ -48,6 +48,8 @@ export default class MyHeader extends Component {
         });
       }
     );
+    this.props.setAhp([3, 5]);
+    
   }
 
   render() {
@@ -75,6 +77,7 @@ export default class MyHeader extends Component {
               activeTab={activeTab}
               okText={okText}
               requirements={this.props.requirementsArr}
+              ahp = {this.props.ahp}
             />
           </Col>
         </Row>
