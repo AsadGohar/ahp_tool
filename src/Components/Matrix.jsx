@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Table, Select } from "antd";
-import { AHPComponent } from "./AHPComponent"
+import { AHPComponent } from "./AHPComponent";
 import { deepEqual } from "assert";
 import { throwStatement } from "@babel/types";
 
@@ -79,16 +79,29 @@ export default class Matrix extends Component {
       {
         title: "",
         dataIndex: "row_header",
-        className: "row_header"
+        className: "row_header",
+        align: "center"
       }
     ];
-
+    let newMatrixData = this.props.matrixData;
     for (let i = 1; i <= requirements; i++) {
-      newColumns.push({
+      if (newMatrixData[i] == null) {
+        newMatrixData[i] = [];
+      }
+
+      let cell = {
         title: "R" + i,
-        dataIndex: "R" + i
-      });
+        dataIndex: "R" + i,
+        align: "center"
+      };
+
+      if (i === 1) {
+        cell["className"] = "w125";
+      }
+      newColumns.push(cell);
     }
+
+    this.props.setMatrixData(newMatrixData);
 
     this.setState({
       columns: newColumns
@@ -133,12 +146,33 @@ export default class Matrix extends Component {
     );
   }
 
-  handleMatrixInput = (value, row_no, col_no) => {
-    this.setReci(value, row_no, col_no);
-    // let newMatrixData = this.props.matrixData;
-    // if()
-    // newMatrixData.push(value);
-    // this.props.setMatrixData(newMatrixData);
+  handleMatrixInput = (index, row_no, col_no) => {
+    this.setReci(index, row_no, col_no);
+    let newMatrixData = this.props.matrixData;
+
+    newMatrixData[row_no][col_no] = this.getCalculatedValue(
+      matrixOptions[index]
+    );
+    newMatrixData[col_no][row_no] = this.getCalculatedValue(
+      recMatrixOptions[index]
+    );
+
+    // let val = [
+    //   [1, 4, 6, 0.8],
+    //   [4, 1, 2, 0.89],
+    //   [3, 5, 1, 9],
+    //   [1, 0.5, 0.123, 1]
+    // ];
+    // newMatrixData.push([val]);
+    this.props.setMatrixData(newMatrixData);
+  };
+
+  getCalculatedValue(value) {
+    if (value.length > 1) {
+      return value.slice(0, 1) / value.slice(2, 3);
+    } else {
+      return parseInt(value);
+    }
   }
 
   setReci = (value, row_no, col_no) => {
@@ -146,17 +180,15 @@ export default class Matrix extends Component {
 
     //console.log(value + " | " + row_no + " | " + col_no);
     newData[col_no - 1]["R" + row_no] = recMatrixOptions[value];
-    
-    // console.log(newData[1]["R1"] + "|" + newData[2]["R2"] );
+
+    // console.log(newData[1]["R2"] + newData[1]["R3"]);
 
     this.setState({
       data: newData
-    });    
+    });
   };
 
-
-
-  render() {  
+  render() {
     return (
       <Table
         columns={this.state.columns}

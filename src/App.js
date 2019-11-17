@@ -7,27 +7,29 @@ import { Layout } from "antd";
 export default class App extends Component {
   state = {
     requirementsArr: [],
-    ahp:[]
+    ahp: []
   };
 
   setRequirement = x => {
     this.setState({
       requirementsArr: x
     });
-  }
+  };
 
-  setAhp = x =>
-  {
+  setAhp = x => {
     this.setState({
-      ahp:x
+      ahp: x
     });
-  }
+  };
 
   render() {
     return (
       <Layout>
-        <MyHeader setAhp = {this.setAhp} />
-        <AHPComponent ahp = {this.state.ahp} />
+        <MyHeader setAhp={this.setAhp} setRequirement={this.setRequirement} />
+        <AHPComponent
+          ahp={this.state.ahp}
+          requirementsArr={this.state.requirementsArr}
+        />
       </Layout>
     );
   }

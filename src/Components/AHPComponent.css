@@ -1,0 +1,12 @@
+.m25 {
+  margin: 25px;
+}
+
+#body .ant-table-tbody > tr > td {
+  background: white;
+}
+
+.row_header {
+  font-weight: 600;
+  background-color: #fafafa !important;
+}

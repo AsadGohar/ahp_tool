@@ -1,163 +1,155 @@
-import React, { Component } from 'react'
-import { Layout , Table} from "antd";
+import React, { Component } from "react";
+import { Layout, Table, Row, Col } from "antd";
+import "./AHPComponent.css";
 const { Header, Content, Footer } = Layout;
 
-const val = [1,1,3,4,5,6,1/9]
-
-const columns = [
-    // {
-    //     title: "",
-    //     dataIndex: "row_header"
-    // },
-    // {
-    //     title: 'R1',
-    //     dataIndex: 'R1',
-        
-    // },
-    // {
-    //     title: 'R2',
-    //     dataIndex: 'R2',
-    // },
-    // {
-    //     title: 'R3',
-    //     dataIndex: 'R3',
-    // },
-    
-   
-];
-
-for(let i=1; i<val.length;i++)
-{
-    columns.push(
-        {
-            title: "R" + i,
-            dataIndex: "R" + i
-        }
-    )
-}
-
-
-const data = [
-    {
-        key: '1',
-        row_header: "R1",
-        R1: 1,
-        R2: 5,
-        R3: 7,
-    },
-    {
-        row_header: "R2",
-        key: '2',
-        R1: '1/5',
-        R2: 1,
-        R3: '1/7',
-    },
-    {
-        row_header: "R3",
-        key: '3',
-        R1: '1/7',
-        R2: '1/6',
-        R3: 1,
-       
-    }
-    
-];
-
-const secondStepCol = [
-    {
-        
-            title: 'Row Sum',
-            dataIndex: 'R1',
-
-    }
-]
-
-
-
-const secondStepData = [
-    {
-        R1: 1
-    },
-    {
-        R1: 5
-    },
-    {
-        R1: 7
-    }
-]
-
-const lastStepCol = [
-    {
-        
-            title: 'Priority',
-            dataIndex: 'R1',
-
-    }
-]
-
-
-
-const lastStepData = [
-    {
-        R1: 1
-    },
-    {
-        R1: 5
-    },
-    {
-        R1: 7
-    }
-]
-
-
 export default class AHPComponent extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-    constructor(props) {
-        super(props);
-      }
+  state = {
+    ahpVal: [],
+    step1Columns: [],
+    step1Data: [],
+    step2Columns: [],
+    step2Data: [],
+    step3Columns: [],
+    step3Data: [],
+    ahp: this.props.ahp
+  };
 
-      state = {
-          ahpVal : []
-      }
+  componentDidMount() {
+    this.setColumns(this.props.requirementsArr.length);
+    this.setData(this.props.requirementsArr.length);
+  }
 
-    //   setAhpVal = x =>
-    //   {
-    //       for(let i = 0 ; i <x.length)
-    //   }
-
-    render() {
-        
-        const {ahp} = this.props
-        return (
-           <Content style={{ padding: '50px 50px' }}>
-
-                <Table
-                columns={columns}
-                dataSource={data}
-                bordered
-                pagination={false}
-
-                
-            />
-                <br/>
-
-                <Table
-                columns={secondStepCol}
-                dataSource={secondStepData}
-                bordered
-                pagination={false}
-            />
-
-                <br/>
-
-                <Table
-                columns={lastStepCol}
-                dataSource={lastStepData}
-                bordered
-                pagination={false}
-            />
-            
-           </Content>
-        )
+  componentDidUpdate() {
+    if (this.state.ahp != this.props.ahp) {
+      this.updateAhp(this.props.ahp);
+      this.setColumns(this.props.requirementsArr.length);
+      this.setData(this.props.requirementsArr.length);
     }
+  }
+
+  updateAhp(ahp) {
+    this.setState({ ahp });
+  }
+
+  setColumns(requirements) {
+    let newColumns = [
+      {
+        title: "",
+        dataIndex: "row_header",
+        className: "row_header",
+        align: "center"
+      }
+    ];
+
+    for (let i = 1; i <= requirements; i++) {
+      let cell = {
+        title: "R" + i,
+        dataIndex: "R" + i,
+        align: "center"
+      };
+
+      if (i === 1) {
+        cell["className"] = "w125";
+      }
+      newColumns.push(cell);
+    }
+    this.setState({
+      step1Columns: newColumns
+    });
+  }
+
+  setData(requirements) {
+    debugger;
+    let newData = [];
+    let sum = [];
+
+    for (let i = 1; i <= requirements; i++) {
+      for (let j = 1; j <= requirements; j++) {
+        if (i == 1) {
+          sum[j] = parseFloat(this.getValue(i, j));
+        } else {
+          sum[j] += parseFloat(this.getValue(i, j));
+        }
+      }
+    }
+
+    for (let i = 1; i <= requirements; i++) {
+      let current = {
+        key: i,
+        row_header: "R" + i
+      };
+
+      for (let j = 1; j <= requirements; j++) {
+        current["R" + j] = this.getFixedValue(this.getValue(i, j) / sum[j]);
+      }
+      newData.push(current);
+    }
+
+    this.setState({
+      step1Data: newData
+    });
+  }
+
+  getValue(i, j) {
+    if (i == j) {
+      return 1;
+    } else if (this.props.ahp[i] != null) {
+      return this.props.ahp[i][j];
+    } else {
+      return "";
+    }
+  }
+
+  getFixedValue(value) {
+    if (value.toString().length > 1) {
+      return value.toString().slice(0, 5);
+    } else {
+      return value.toString();
+    }
+  }
+
+  render() {
+    const { ahp } = this.props;
+    return (
+      <Content id="body" style={{ padding: "50px 50px" }}>
+        <Row className="m25">
+          <Col span={12} offset={6}>
+            <Table
+              columns={this.state.step1Columns}
+              dataSource={this.state.step1Data}
+              bordered
+              pagination={false}
+            />
+          </Col>
+        </Row>
+
+        <Row className="m25">
+          <Col span={12} offset={6}>
+            <Table
+              columns={this.state.step2Columns}
+              dataSource={this.state.step2Data}
+              bordered
+              pagination={false}
+            />
+          </Col>
+        </Row>
+
+        <Row className="m25">
+          <Col span={12} offset={6}>
+            <Table
+              columns={this.state.step3Columns}
+              dataSource={this.state.step3Data}
+              bordered
+              pagination={false}
+            />
+          </Col>
+        </Row>
+      </Content>
+    );
+  }
 }

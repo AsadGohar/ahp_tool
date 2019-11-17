@@ -5,6 +5,7 @@ import RequirementsModal from "./RequirementsModal";
 
 const { Header } = Layout;
 
+let form;
 export default class MyHeader extends Component {
   constructor(props) {
     super(props);
@@ -13,7 +14,7 @@ export default class MyHeader extends Component {
     visible: false,
     activeTab: 1,
     okText: "Next",
-    metrixData: []
+    matrixData: []
   };
 
   showModal = () => {
@@ -24,14 +25,25 @@ export default class MyHeader extends Component {
 
   handleOk = e => {
     if (this.state.activeTab == 1) {
-      this.setState({
-        activeTab: 2,
-        okText: "Done"
+      form.validateFields((err, values) => {
+        if (!err) {
+          const { keys, names } = values;
+          this.props.setRequirement(names);
+
+          this.setState({
+            activeTab: 2,
+            okText: "Done"
+          });
+        }
       });
     } else {
       this.handleDone();
     }
   };
+
+  setForm(f) {
+    form = f;
+  }
 
   handleCancel = () => {
     this.handleDone();
@@ -52,9 +64,9 @@ export default class MyHeader extends Component {
     this.props.setAhp(this.state.matrixData);
   }
 
-  setMatrixData(matrixData) {
+  setMatrixData = matrixData => {
     this.setState({ matrixData });
-  }
+  };
 
   render() {
     const { visible, activeTab, okText } = this.state;
@@ -83,6 +95,7 @@ export default class MyHeader extends Component {
               requirements={this.props.requirementsArr}
               setMatrixData={this.setMatrixData}
               matrixData={this.state.matrixData}
+              setForm={this.setForm}
             />
           </Col>
         </Row>

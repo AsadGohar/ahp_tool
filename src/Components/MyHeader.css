@@ -4,6 +4,7 @@ h1 {
 
 .row_header {
   font-weight: 600;
+  background-color: #fafafa;
 }
 
 .ant-modal-content {
@@ -12,4 +13,8 @@ h1 {
 
 .ant-modal {
   min-width: min-content !important;
+}
+
+.w125 {
+  min-width: 90px;
 }

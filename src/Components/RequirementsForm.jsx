@@ -15,10 +15,6 @@ export default class RequirementsForm extends React.Component {
     // can use data-binding to get
     const keys = form.getFieldValue("keys");
     // We need at least one passenger
-    if (keys.length === 1) {
-      return;
-    }
-
     // can use data-binding to set
     form.setFieldsValue({
       keys: keys.filter(key => key !== k)
@@ -47,7 +43,10 @@ export default class RequirementsForm extends React.Component {
       if (!err) {
         const { keys, names } = values;
         console.log("Received values of form: ", values);
-        console.log("Merged values:", keys.map(key => names[key]));
+        console.log(
+          "Merged values:",
+          keys.map(key => names[key])
+        );
       }
     });
   };
@@ -61,21 +60,16 @@ export default class RequirementsForm extends React.Component {
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 20 }
+        sm: { span: 24 }
       }
     };
-    const formItemLayoutWithOutLabel = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 20, offset: 4 }
-      }
-    };
+
     getFieldDecorator("keys", { initialValue: [] });
     const keys = getFieldValue("keys");
     const formItems = keys.map((k, index) => (
       <Form.Item
-        {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-        label={index === 0 ? "Requirements" : ""}
+        {...formItemLayout}
+        label={index === 0 ? "" : ""}
         required={false}
         key={k}
       >
@@ -85,33 +79,36 @@ export default class RequirementsForm extends React.Component {
             {
               required: true,
               whitespace: true,
-              message: "Please input passenger's name or delete this field."
+              message: "Please insert a requirement or delete this field."
             }
           ]
         })(
           <Input
             placeholder="Requirements"
-            style={{ width: "60%", marginRight: 8 }}
+            onChange={this.props.setForm(this.props.form)}
+            style={{ width: "90%", marginRight: 8 }}
           />
         )}
-        {keys.length > 1 ? (
-          <Icon
-            className="dynamic-delete-button"
-            type="minus-circle-o"
-            onClick={() => this.remove(k)}
-          />
-        ) : null}
+        <Icon
+          className="dynamic-delete-button"
+          type="minus-circle-o"
+          onClick={() => this.remove(k)}
+        />
       </Form.Item>
     ));
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form>
         {formItems}
-        <Form.Item {...formItemLayoutWithOutLabel}>
-          <Button type="dashed" onClick={this.add} style={{ width: "60%" }}>
+        <Form.Item {...formItemLayout}>
+          <Button
+            type="dashed"
+            onClick={this.add}
+            style={{ width: "60%", marginLeft: "20%" }}
+          >
             <Icon type="plus" /> Add field
           </Button>
         </Form.Item>
-        <Form.Item {...formItemLayoutWithOutLabel}></Form.Item>
+        <Form.Item {...formItemLayout}></Form.Item>
       </Form>
     );
   }

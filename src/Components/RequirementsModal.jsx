@@ -14,8 +14,7 @@ export default class RequirementsModal extends Component {
     super(props);
   }
   state = {
-    requirements: 0,
-    
+    requirements: 0
   };
 
   setRequirementCount = x => {
@@ -25,7 +24,14 @@ export default class RequirementsModal extends Component {
   };
 
   render() {
-    const { visible, handleCancel, handleOk, activeTab, okText ,setAhp} = this.props;
+    const {
+      visible,
+      handleCancel,
+      handleOk,
+      activeTab,
+      okText,
+      setAhp
+    } = this.props;
     const { requirements } = this.state;
     return (
       <Modal
@@ -39,10 +45,11 @@ export default class RequirementsModal extends Component {
             <WrappedForm
               setRequirementCount={this.setRequirementCount}
               requirementsArr={this.props.requirementsArr}
+              setForm={this.props.setForm}
             />
           </TabPane>
           <TabPane tab="Relative Intensity" key="2">
-            <Matrix 
+            <Matrix
               requirements={this.state.requirements}
               setMatrixData={this.props.setMatrixData}
               matrixData={this.props.matrixData}
