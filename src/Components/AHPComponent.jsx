@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Layout, Table, Row, Col } from "antd";
+import { Layout, Table, Row, Col, Typography } from "antd";
 import "./AHPComponent.css";
 const { Header, Content, Footer } = Layout;
 
+const { Title } = Typography;
 export default class AHPComponent extends Component {
   constructor(props) {
     super(props);
@@ -14,7 +15,6 @@ export default class AHPComponent extends Component {
     step1Data: [],
     step2Columns: [],
     step2Data: [],
-    step3Columns: [],
     step3Data: [],
     ahp: this.props.ahp
   };
@@ -34,6 +34,48 @@ export default class AHPComponent extends Component {
 
   updateAhp(ahp) {
     this.setState({ ahp });
+  }
+
+  setStep2Columns() {
+    let newColumns = [
+      {
+        title: "",
+        dataIndex: "row_header",
+        className: "row_header",
+        align: "center"
+      }
+    ];
+
+    this.setState({
+      step2Columns: newColumns
+    });
+  }
+
+  setStep2_3Data(step2Arr) {
+    let newData = [];
+    let data3 = [];
+
+    for (let i = 0; i < step2Arr.length; i++) {
+      let current = {
+        key: i,
+        row_header: this.getFixedValue(step2Arr[i])
+      };
+
+      let current3 = {
+        key: i,
+        row_header: this.getFixedValue(
+          step2Arr[i] / this.props.requirementsArr.length
+        )
+      };
+
+      newData.push(current);
+      data3.push(current3);
+    }
+
+    this.setState({
+      step2Data: newData,
+      step3Data: data3
+    });
   }
 
   setColumns(requirements) {
@@ -61,10 +103,11 @@ export default class AHPComponent extends Component {
     this.setState({
       step1Columns: newColumns
     });
+
+    this.setStep2Columns();
   }
 
   setData(requirements) {
-    debugger;
     let newData = [];
     let sum = [];
 
@@ -78,21 +121,26 @@ export default class AHPComponent extends Component {
       }
     }
 
+    let step2Arr = [];
     for (let i = 1; i <= requirements; i++) {
       let current = {
         key: i,
         row_header: "R" + i
       };
 
+      let temp = 0;
       for (let j = 1; j <= requirements; j++) {
         current["R" + j] = this.getFixedValue(this.getValue(i, j) / sum[j]);
+        temp += parseFloat(current["R" + j]);
       }
+      step2Arr[i - 1] = temp;
       newData.push(current);
     }
 
     this.setState({
       step1Data: newData
     });
+    this.setStep2_3Data(step2Arr);
   }
 
   getValue(i, j) {
@@ -142,7 +190,7 @@ export default class AHPComponent extends Component {
         <Row className="m25">
           <Col span={12} offset={6}>
             <Table
-              columns={this.state.step3Columns}
+              columns={this.state.step2Columns}
               dataSource={this.state.step3Data}
               bordered
               pagination={false}
